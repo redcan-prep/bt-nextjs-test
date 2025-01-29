@@ -6,7 +6,7 @@ import { ArrowUpIcon, RefreshCw, StopCircle, Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { AutoResizeTextarea } from "@/components/autoresize-textarea"
-import { useState, useContext } from "react"
+import { useContext } from "react"
 import type React from "react"
 import { ThemeContext } from "@/context/ThemeContext"
 
@@ -15,7 +15,6 @@ export function ChatForm({ className, ...props }: React.ComponentProps<"div">) {
   const { messages, input, setInput, append, reload, stop, isLoading } = useChat({
     api: "/api/chat",
   })
-  const [selectedConversation, setSelectedConversation] = useState<string | null>(null)
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

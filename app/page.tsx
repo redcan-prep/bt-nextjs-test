@@ -2,11 +2,9 @@
 
 import { ChatForm } from "@/components/chat-form"
 import { Sidebar } from "@/components/sidebar"
-import { useState, useContext } from "react"
-import { ThemeContext } from "@/context/ThemeContext"
+import { useState } from "react"
 
 export default function Page() {
-  const { theme, toggleTheme } = useContext(ThemeContext)
   const [conversations, setConversations] = useState([
     { id: "1", title: "Chat 1" },
     { id: "2", title: "Chat 2" },

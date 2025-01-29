@@ -1,4 +1,4 @@
-import { Configuration, OpenAIApi } from 'openai-edge'
+// import { Configuration, OpenAIApi } from 'openai-edge'
 // import { OpenAIStream, StreamingTextResponse } from 'ai/stream'
 
 // Create an OpenAI API client
@@ -22,3 +22,9 @@ import { Configuration, OpenAIApi } from 'openai-edge'
 //   const stream = OpenAIStream(response)
 //   return new StreamingTextResponse(stream)
 // }
+
+export async function POST(req: Request) {
+  const { messages } = await req.json()
+  console.log(messages)
+  return new Response("Hello World")
+}
