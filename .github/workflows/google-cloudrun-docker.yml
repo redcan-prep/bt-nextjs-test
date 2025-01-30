@@ -29,9 +29,9 @@ jobs:
       - name: 'Docker Auth'
         uses: docker/login-action@v3 
         with:
-          username: 'oauth2accesstoken'
-          password: '${{ steps.auth.outputs.auth_token }}'
           registry: 'us-central1-docker.pkg.dev'
+          username: _json_key
+          password: ${{ secrets.GCP_SA_KEY }} 
 
       # 3) Build a Docker image
       - name: Build Docker image
