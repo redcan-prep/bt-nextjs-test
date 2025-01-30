@@ -1,0 +1,61 @@
+name: Build & Deploy to Cloud Run
+
+on:
+  push:
+    branches: [ "main" ] # or your desired branch
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: 'read'
+      id-token: 'write'
+
+      
+    steps:
+      # 1) Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2.1) Google Cloud Auth
+      - id: 'auth'
+        name: Google Cloud Auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }} 
+          project_id: serverless-dev-394718
+
+      # 2.2) Google Cloud Auth
+      - name: 'Docker Auth'
+        uses: docker/login-action@v3 
+        with:
+          registry: 'us-central1-docker.pkg.dev'
+          username: _json_key
+          password: ${{ secrets.GCP_SA_KEY }} 
+
+      # 3) Build a Docker image
+      - name: Build Docker image
+        run: |
+          export IMAGE_URI="us-central1-docker.pkg.dev/serverless-dev-394718/gcf-artifacts/test:${{ github.sha }}"
+          docker build -t "$IMAGE_URI" .
+      
+      # 4) Push Docker image to Artifact Registry
+      - name: Push to Artifact Registry
+        run: |
+          export IMAGE_URI="us-central1-docker.pkg.dev/serverless-dev-394718/gcf-artifacts/test:${{ github.sha }}"
+          docker push "$IMAGE_URI"
+
+      # 5) Deploy to Cloud Run
+      - name: Deploy to Cloud Run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: test
+          region: us-central1
+          image: 'us-central1-docker.pkg.dev/serverless-dev-394718/gcf-artifacts/test:${{ github.sha }}'
+        # run: |
+        #   export IMAGE_URI="us-central1-docker.pkg.dev/serverless-dev-394718/gcf-artifacts/test:${{ github.sha }}"
+        #   gcloud run deploy test \
+        #     --image "$IMAGE_URI" \
+        #     --region ${{ secrets.GCP_REGION }} \
+        #     --platform managed \
+        #     --allow-unauthenticated
